@@ -112,17 +112,19 @@ class App:
         self.root.mainloop()
 
     def plot_update(self,event):
-        x_wing = self.foil_w['X'].values*self.w_mac.get()+self.w_x.get()
-        y_wing = self.foil_w['Y'].values*self.w_mac.get()+self.w_y.get()
+        x_wing = self.foil_w['X'].values*self.w_mac.get()
+        y_wing = self.foil_w['Y'].values*self.w_mac.get()
         w_aoa = self.w_aoa.get()*np.pi/180
-        self.x_wing_r = np.multiply(x_wing,np.cos(w_aoa))+np.multiply(y_wing,np.sin(w_aoa))
-        self.y_wing_r = -np.multiply(x_wing,np.sin(w_aoa))+np.multiply(y_wing,np.cos(w_aoa))
+        self.x_wing_r = np.multiply(x_wing,np.cos(w_aoa))-np.multiply(y_wing,np.sin(w_aoa))+self.w_x.get()
+        self.y_wing_r = np.multiply(x_wing,np.sin(w_aoa))+np.multiply(y_wing,np.cos(w_aoa))+self.w_y.get()
         
-        x_tail = self.foil_t['X'].values*self.t_mac.get()+self.t_x.get()
-        y_tail = self.foil_t['Y'].values*self.t_mac.get()+self.t_y.get()
+        x_tail = self.foil_t['X'].values*self.t_mac.get()
+        y_tail = self.foil_t['Y'].values*self.t_mac.get()
         t_aoa = self.t_aoa*np.pi/180
-        self.x_tail_r = np.multiply(x_tail,np.cos(t_aoa))+np.multiply(y_tail,np.sin(t_aoa))
-        self.y_tail_r = -np.multiply(x_tail,np.sin(t_aoa))+np.multiply(y_tail,np.cos(t_aoa))
+        self.x_tail_r = np.multiply(x_tail,np.cos(t_aoa-w_aoa))-np.multiply(y_tail,np.sin(t_aoa-w_aoa))+self.t_x.get()
+        self.y_tail_r = np.multiply(x_tail,np.sin(t_aoa-w_aoa))+np.multiply(y_tail,np.cos(t_aoa-w_aoa))+self.t_y.get()
+        print(self.y_tail_r)
+        
         self.axes.plot(self.x_wing_r,self.y_wing_r,'b'),
         self.axes.plot(self.x_tail_r,self.y_tail_r,'r'),
         self.axes.plot(self.cg_x.get(),self.cg_y.get(),'ko')
